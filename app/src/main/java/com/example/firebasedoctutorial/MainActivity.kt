@@ -6,6 +6,8 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
 class MainActivity : AppCompatActivity() {
@@ -15,8 +17,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var submit: Button
     lateinit var listView: ListView
     lateinit var adapter: ArrayAdapter<*>
-    val database = FirebaseDatabase.getInstance().reference
     val users = mutableListOf<String>()
+    lateinit var database: DatabaseReference
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -27,10 +29,11 @@ class MainActivity : AppCompatActivity() {
         submit = findViewById(R.id.submit)
         listView = findViewById(R.id.entries)
 
-
         adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, users)
         listView.adapter = adapter
-
+        val database = FirebaseDatabase.getInstance().reference
+        val loc = database.child("test")
+        update(loc)
 
         submit.setOnClickListener {
             val uName = name.text.toString()
@@ -38,8 +41,9 @@ class MainActivity : AppCompatActivity() {
             val Uname = name.text.toString()
             val text = User(uName, uMail)
             database.child("test/").child(Uname).setValue(text)
-            update()
             reset()
+            update(loc)
+
         }
 
 
@@ -47,13 +51,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun reset() {
         name.setText("")
-        userName.setText("")
         email.setText("")
+        userName.setText("")
+
     }
 
-    private fun update() {
-        database.child("test").get().addOnSuccessListener { data ->
+    private fun update(loc: DatabaseReference) {
+        loc.get().addOnSuccessListener { data ->
 
+            adapter.clear()
             if (data.exists()) {
                 for (x in data.children) {
 
@@ -67,4 +73,6 @@ class MainActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
         }
     }
+
+
 }
