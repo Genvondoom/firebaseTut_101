@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         val test2 = mapOf("tester" to User("vd", "email"))
         //database.child("test/hello").setValue(test2)
 
-        database.child("test/hello").get().addOnSuccessListener{
+        database.child("test").get().addOnSuccessListener{
 
             val test = it.value
             println()
