@@ -34,9 +34,9 @@ class MainActivity : AppCompatActivity() {
         database.child("test").get().addOnSuccessListener{
 
             val test = it.value
-            println()
-            //users.add(test)
-            //adapter.notifyDataSetChanged()
+
+            users.add(test.toString())
+            adapter.notifyDataSetChanged()
         }
 
 
